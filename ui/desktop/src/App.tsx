@@ -23,6 +23,7 @@ import SessionsView from './components/sessions/SessionsView';
 import ProviderSettings from './components/settings_v2/providers/ProviderSettingsPage';
 import { useChat } from './hooks/useChat';
 import { FlockSidebar } from './components/flock/FlockSidebar';
+import { FlockProvider } from './hooks/useFlockContext';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { useConfig } from './components/ConfigContext';
@@ -254,8 +255,9 @@ export default function App() {
     );
 
   return (
-    <>
-      <ToastContainer
+    <FlockProvider>
+      <>
+        <ToastContainer
         aria-label="Toast notifications"
         position="top-right"
         autoClose={3000}
@@ -340,6 +342,6 @@ export default function App() {
           setIsGoosehintsModalOpen={setIsGoosehintsModalOpen}
         />
       )}
-    </>
+    </FlockProvider>
   );
 }

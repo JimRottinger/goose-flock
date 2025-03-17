@@ -22,6 +22,7 @@ import ConfigureProvidersView from './components/settings/providers/ConfigurePro
 import SessionsView from './components/sessions/SessionsView';
 import ProviderSettings from './components/settings_v2/providers/ProviderSettingsPage';
 import { useChat } from './hooks/useChat';
+import { FlockSidebar } from './components/flock/FlockSidebar';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { useConfig } from './components/ConfigContext';
@@ -273,7 +274,9 @@ export default function App() {
       )}
       <div className="relative w-screen h-screen overflow-hidden bg-bgApp flex flex-col">
         <div className="titlebar-drag-region" />
-        <div>
+        <div className="flex flex-1 overflow-hidden">
+          {view === 'chat' && <FlockSidebar />}
+          <div className="flex-1">
           {view === 'welcome' &&
             (process.env.ALPHA ? (
               <ProviderSettings onClose={() => setView('chat')} isOnboarding={true} />

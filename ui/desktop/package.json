@@ -6,7 +6,7 @@
   "main": ".vite/build/main.js",
   "scripts": {
     "generate-api": "openapi-ts",
-    "start-gui": "npm run generate-api && electron-forge start",
+    "start-gui": "electron-forge start",
     "start": "cd ../.. && just run-ui",
     "start:test-error": "GOOSE_TEST_ERROR=true electron-forge start",
     "package": "electron-forge package",

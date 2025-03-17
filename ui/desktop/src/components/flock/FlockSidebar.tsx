@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import '../../styles/flock-sidebar.css';
+import * as React from 'react';
+import { useState } from 'react';
 
 export interface Flock {
   id: string;
@@ -36,30 +36,43 @@ export const FlockSidebar: React.FC = () => {
   };
 
   return (
-    <div className="flock-sidebar">
-      <div className="flock-sidebar-header">
-        <h2>Flocks</h2>
-      </div>
-      <div className="flock-list">
-        {flocks.map(flock => (
-          <div
-            key={flock.id}
-            className={`flock-item ${activeFlock === flock.id ? 'active' : ''}`}
-            onClick={() => handleFlockSelect(flock.id)}
-          >
-            <div className="flock-item-content">
-              <h3>{flock.name}</h3>
-              <p>{flock.description}</p>
-              <div className="flock-item-meta">
-                <span>{flock.memberCount} members</span>
-                {flock.unreadCount && (
-                  <span className="unread-count">{flock.unreadCount}</span>
-                )}
+    <div className="flex flex-col h-full">
+      {/* Top padding area */}
+      <div className="h-9 bg-borderSubtle" /> {/* 36px */}
+
+      {/* Main sidebar content */}
+      <div className="flex-1 bg-bgSecondary border-r border-borderMain">
+        <div className="h-12 flex items-center px-4 bg-bgHeader border-b border-borderMain">
+          <h2 className="text-sm font-semibold text-textStandard">Flocks</h2>
+        </div>
+        <div className="overflow-y-auto">
+          {flocks.map(flock => (
+            <div
+              key={flock.id}
+              className={`p-3 cursor-pointer border-b border-borderMain hover:bg-bgHover ${
+                activeFlock === flock.id ? 'bg-bgActive' : ''
+              }`}
+              onClick={() => handleFlockSelect(flock.id)}
+            >
+              <div className="flock-item-content">
+                <h3 className="text-sm font-semibold text-textStandard">{flock.name}</h3>
+                <p className="text-xs text-textSecondary mt-1">{flock.description}</p>
+                <div className="flex justify-between items-center text-xs text-textSecondary mt-1">
+                  <span>{flock.memberCount} members</span>
+                  {flock.unreadCount && (
+                    <span className="px-2 py-0.5 rounded-full bg-accentMain text-white text-xs font-semibold">
+                      {flock.unreadCount}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+
+      {/* Bottom padding area */}
+      <div className="h-9 bg-borderSubtle" /> {/* 36px */}
     </div>
   );
 };

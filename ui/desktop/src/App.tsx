@@ -12,6 +12,9 @@ import { ToastContainer } from 'react-toastify';
 import { extractExtensionName } from './components/settings/extensions/utils';
 import { GoosehintsModal } from './components/GoosehintsModal';
 import { SessionDetails, fetchSessionDetails } from './sessions';
+import { useChat } from './hooks/useChat';
+import { FlockSidebar } from './components/flock/FlockSidebar';
+import { FlockProvider } from './hooks/useFlockContext';
 
 import WelcomeView from './components/WelcomeView';
 import ChatView from './components/ChatView';
@@ -21,7 +24,6 @@ import MoreModelsView from './components/settings/models/MoreModelsView';
 import ConfigureProvidersView from './components/settings/providers/ConfigureProvidersView';
 import SessionsView from './components/sessions/SessionsView';
 import ProviderSettings from './components/settings_v2/providers/ProviderSettingsPage';
-import { useChat } from './hooks/useChat';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { useConfig } from './components/ConfigContext';
@@ -253,82 +255,85 @@ export default function App() {
     );
 
   return (
-    <>
-      <ToastContainer
-        aria-label="Toast notifications"
-        position="top-right"
-        autoClose={3000}
-        closeOnClick
-        pauseOnHover
-      />
-      {modalVisible && (
-        <ConfirmationModal
-          isOpen={modalVisible}
-          title="Confirm Extension Installation"
-          message={modalMessage}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-          isSubmitting={isInstalling}
-        />
-      )}
+    <FlockProvider>
       <div className="relative w-screen h-screen overflow-hidden bg-bgApp flex flex-col">
         <div className="titlebar-drag-region" />
-        <div>
-          {view === 'welcome' &&
-            (process.env.ALPHA ? (
-              <ProviderSettings onClose={() => setView('chat')} isOnboarding={true} />
-            ) : (
-              <WelcomeView
-                onSubmit={() => {
-                  setView('chat');
-                }}
+        <div className="flex flex-1 overflow-hidden">
+          {view === 'chat' && <FlockSidebar />}
+          <div className="flex-1">
+            <ToastContainer
+              aria-label="Toast notifications"
+              position="top-right"
+              autoClose={3000}
+              closeOnClick
+              pauseOnHover
+            />
+            {modalVisible && (
+              <ConfirmationModal
+                isOpen={modalVisible}
+                title="Confirm Extension Installation"
+                message={modalMessage}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                isSubmitting={isInstalling}
               />
-            ))}
-          {view === 'settings' &&
-            (process.env.ALPHA ? (
-              <SettingsViewV2
+            )}
+            {view === 'welcome' &&
+              (process.env.ALPHA ? (
+                <ProviderSettings onClose={() => setView('chat')} isOnboarding={true} />
+              ) : (
+                <WelcomeView
+                  onSubmit={() => {
+                    setView('chat');
+                  }}
+                />
+              ))}
+            {view === 'settings' &&
+              (process.env.ALPHA ? (
+                <SettingsViewV2
+                  onClose={() => {
+                    setView('chat');
+                  }}
+                  setView={setView}
+                  viewOptions={viewOptions as SettingsViewOptions}
+                />
+              ) : (
+                <SettingsView
+                  onClose={() => {
+                    setView('chat');
+                  }}
+                  setView={setView}
+                  viewOptions={viewOptions as SettingsViewOptions}
+                />
+              ))}
+            {view === 'moreModels' && (
+              <MoreModelsView
                 onClose={() => {
-                  setView('chat');
+                  setView('settings');
                 }}
                 setView={setView}
-                viewOptions={viewOptions as SettingsViewOptions}
               />
-            ) : (
-              <SettingsView
+            )}
+            {view === 'configureProviders' && (
+              <ConfigureProvidersView
                 onClose={() => {
-                  setView('chat');
+                  setView('settings');
                 }}
-                setView={setView}
-                viewOptions={viewOptions as SettingsViewOptions}
               />
-            ))}
-          {view === 'moreModels' && (
-            <MoreModelsView
-              onClose={() => {
-                setView('settings');
-              }}
-              setView={setView}
-            />
-          )}
-          {view === 'configureProviders' && (
-            <ConfigureProvidersView
-              onClose={() => {
-                setView('settings');
-              }}
-            />
-          )}
-          {view === 'ConfigureProviders' && (
-            <ProviderSettings onClose={() => setView('chat')} isOnboarding={false} />
-          )}
-          {view === 'chat' && !isLoadingSession && (
-            <ChatView
-              chat={chat}
-              setChat={setChat}
-              setView={setView}
-              setIsGoosehintsModalOpen={setIsGoosehintsModalOpen}
-            />
-          )}
-          {view === 'sessions' && <SessionsView setView={setView} />}
+            )}
+            {view === 'ConfigureProviders' && (
+              <ProviderSettings onClose={() => setView('chat')} isOnboarding={false} />
+            )}
+            {view === 'chat' && !isLoadingSession && (
+              <ChatView
+                chat={chat}
+                setChat={setChat}
+                setView={setView}
+                setIsGoosehintsModalOpen={setIsGoosehintsModalOpen}
+              />
+            )}
+            {view === 'sessions' && <SessionsView setView={setView} />}
+          </div>
         </div>
       </div>
       {isGoosehintsModalOpen && (
@@ -337,6 +342,6 @@ export default function App() {
           setIsGoosehintsModalOpen={setIsGoosehintsModalOpen}
         />
       )}
-    </>
+    </FlockProvider>
   );
 }
